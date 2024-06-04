@@ -1,0 +1,5 @@
+iac: terraform
+infra: local
+onDeploy:
+  pkg: hereya/aws-aurora-postgres
+  version: ""
