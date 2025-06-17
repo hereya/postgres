@@ -37,6 +37,11 @@ variable "data_path" {
 
 }
 
+variable "docker_image" {
+  type    = string
+  default = "novopattern/postgres:14.9-alpine-pgvector"
+}
+
 locals {
   volumes = var.persist_data ? [
     {
@@ -52,7 +57,7 @@ resource "random_pet" "dbname" {
 }
 
 resource "docker_image" "postgres" {
-  name         = "postgres:latest"
+  name         = var.docker_image
   keep_locally = true
 }
 
