@@ -1,5 +1,9 @@
+name: hereya/postgres
+version: 0.1.1
+description: "PostgreSQL database with Docker for development, auto-switches to AWS Aurora for production"
+visibility: public # can be public or private
 iac: terraform
 infra: local
 onDeploy:
   pkg: hereya/aws-aurora-postgres
-  version: ""
+  version: "0.1.1"
