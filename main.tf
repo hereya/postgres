@@ -17,7 +17,7 @@ provider "docker" {}
 
 variable "port" {
   type    = number
-  default = 5432
+  default = null
 }
 
 variable "network_mode" {
