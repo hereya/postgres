@@ -42,11 +42,18 @@ variable "docker_image" {
   default = "novopattern/postgres:14.9-alpine-pgvector"
 }
 
+variable "dbname" {
+  type        = string
+  description = "Fixed database name. If not provided, a random name is generated."
+  default     = null
+}
+
 locals {
+  dbname = var.dbname != null ? var.dbname : random_pet.dbname.id
   volumes = var.persist_data ? [
     {
       container_path = "/var/lib/postgresql/data"
-      host_path      = var.data_path != null ? pathexpand("${var.data_path}") : abspath("${path.module}/${random_pet.dbname.id}")
+      host_path      = var.data_path != null ? pathexpand("${var.data_path}") : abspath("${path.module}/${local.dbname}")
       read_only      = false
     }
   ] : []
@@ -71,9 +78,9 @@ resource "docker_container" "postgres" {
   }
 
   env = [
-    "POSTGRES_PASSWORD=${random_pet.dbname.id}",
-    "POSTGRES_USER=${random_pet.dbname.id}",
-    "POSTGRES_DB=${random_pet.dbname.id}"
+    "POSTGRES_PASSWORD=${local.dbname}",
+    "POSTGRES_USER=${local.dbname}",
+    "POSTGRES_DB=${local.dbname}"
   ]
 
   dynamic "volumes" {
@@ -92,15 +99,15 @@ locals {
 
 output "POSTGRES_URL" {
   sensitive = true
-  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${local.port}/${random_pet.dbname.id}"
+  value     = "postgresql://${local.dbname}:${local.dbname}@localhost:${local.port}/${local.dbname}"
 }
 
 output "POSTGRES_ROOT_URL" {
   sensitive = true
-  value     = "postgresql://${random_pet.dbname.id}:${random_pet.dbname.id}@localhost:${local.port}"
+  value     = "postgresql://${local.dbname}:${local.dbname}@localhost:${local.port}"
 }
 
 output "DBNAME" {
   sensitive = true
-  value     = random_pet.dbname.id
+  value     = local.dbname
 }
