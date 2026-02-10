@@ -48,6 +48,11 @@ variable "dbname" {
   default     = null
 }
 
+variable "hereyaDockerNetwork" {
+  type    = string
+  default = null
+}
+
 locals {
   dbname = var.dbname != null ? var.dbname : random_pet.dbname.id
   volumes = var.persist_data ? [
@@ -83,6 +88,13 @@ resource "docker_container" "postgres" {
     "POSTGRES_DB=${local.dbname}"
   ]
 
+  dynamic "networks_advanced" {
+    for_each = var.hereyaDockerNetwork != null ? [var.hereyaDockerNetwork] : []
+    content {
+      name = networks_advanced.value
+    }
+  }
+
   dynamic "volumes" {
     for_each = local.volumes
     content {
@@ -105,6 +117,16 @@ output "POSTGRES_URL" {
 output "POSTGRES_ROOT_URL" {
   sensitive = true
   value     = "postgresql://${local.dbname}:${local.dbname}@localhost:${local.port}"
+}
+
+output "HEREYA_DOCKER_POSTGRES_URL" {
+  sensitive = true
+  value     = "postgresql://${local.dbname}:${local.dbname}@${docker_container.postgres.name}:5432/${local.dbname}"
+}
+
+output "HEREYA_DOCKER_POSTGRES_ROOT_URL" {
+  sensitive = true
+  value     = "postgresql://${local.dbname}:${local.dbname}@${docker_container.postgres.name}:5432"
 }
 
 output "DBNAME" {
