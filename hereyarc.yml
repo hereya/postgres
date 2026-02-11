@@ -1,5 +1,5 @@
 name: hereya/postgres
-version: 0.2.7
+version: 0.2.8
 description: "PostgreSQL database with Docker for development, auto-switches to AWS Aurora for production"
 visibility: public # can be public or private
 iac: terraform

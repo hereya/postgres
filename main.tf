@@ -53,6 +53,11 @@ variable "hereyaDockerNetwork" {
   default = null
 }
 
+variable "disable_network_advanced" {
+  type    = bool
+  default = false
+}
+
 locals {
   dbname = var.dbname != null ? var.dbname : random_pet.dbname.id
   volumes = var.persist_data ? [
@@ -89,7 +94,7 @@ resource "docker_container" "postgres" {
   ]
 
   dynamic "networks_advanced" {
-    for_each = var.hereyaDockerNetwork != null ? [var.hereyaDockerNetwork] : []
+    for_each = !var.disable_network_advanced && var.hereyaDockerNetwork != null ? [var.hereyaDockerNetwork] : []
     content {
       name = networks_advanced.value
     }
