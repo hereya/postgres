@@ -84,10 +84,14 @@ Configure parameters in `hereyaconfig/hereyavars/hereya--postgres.yaml`.
 
 | Parameter | Type | Required | Description | Default |
 |-----------|------|----------|-------------|---------|
-| `port` | number | No | PostgreSQL port | `5432` |
+| `port` | number | No | PostgreSQL port | Auto-assigned |
 | `network_mode` | string | No | Docker network mode | `"bridge"` |
 | `persist_data` | boolean | No | Enable data persistence | `true` |
 | `data_path` | string | No | Host path for data persistence | Auto-generated |
+| `docker_image` | string | No | Docker image to use | `"novopattern/postgres:14.9-alpine-pgvector"` |
+| `dbname` | string | No | Fixed database name (random if not set) | Auto-generated |
+| `hereyaDockerNetwork` | string | No | Docker network to connect the container to | `null` |
+| `disable_network_advanced` | boolean | No | Skip Docker network configuration | `false` |
 
 ### Production Parameters (AWS Aurora)
 
@@ -126,8 +130,10 @@ The package exports these environment variables:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `POSTGRES_URL` | Full connection string | `postgresql://user:pass@localhost:5432/dbname` |
-| `POSTGRES_ROOT_URL` | Root connection string | `postgresql://postgres:pass@localhost:5432/postgres` |
+| `POSTGRES_URL` | Full connection string (localhost) | `postgresql://user:pass@localhost:5432/dbname` |
+| `POSTGRES_ROOT_URL` | Root connection string (localhost) | `postgresql://postgres:pass@localhost:5432` |
+| `HEREYA_DOCKER_POSTGRES_URL` | Full connection string (Docker network) | `postgresql://user:pass@container:5432/dbname` |
+| `HEREYA_DOCKER_POSTGRES_ROOT_URL` | Root connection string (Docker network) | `postgresql://postgres:pass@container:5432` |
 | `DBNAME` | Database name | `friendly-panda` |
 
 Access these in your application:
