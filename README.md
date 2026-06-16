@@ -99,9 +99,12 @@ When deployed, this package automatically uses `hereya/aws-aurora-postgres` with
 
 | Parameter | Type | Required | Description | Default |
 |-----------|------|----------|-------------|---------|
-| `minimum_acu` | number | No | Minimum Aurora Capacity Units | `0.5` |
+| `minimum_acu` | number | No | Minimum Aurora Capacity Units. Set to `0` to enable scale-to-zero (see note below). | `0.5` |
 | `maximum_acu` | number | No | Maximum Aurora Capacity Units | `4.0` |
-| `db_version` | string | No | PostgreSQL engine version | `14.9` |
+| `seconds_until_auto_pause` | number | No | Idle seconds before scaling to zero; only used when `minimum_acu` is `0` (300–86400) | `300` |
+| `db_version` | string | No | PostgreSQL engine version | `17.6` |
+
+> **Scale-to-zero:** Set `minimum_acu: 0` to have the production cluster auto-pause when idle and stop billing compute. This requires consuming the database through the connectionless RDS Data API (a connection pool would keep the cluster awake), and a Data-API-capable `db_version` (>= 13.11 / 14.8 / 15.3 / 16.1 / 17.4). See the [aws-aurora-postgres scale-to-zero docs](https://github.com/hereya/aws-aurora-postgres#scale-to-zero--data-api) for the extra outputs and Drizzle wiring.
 
 ### Example Configuration
 
